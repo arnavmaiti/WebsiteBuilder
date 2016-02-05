@@ -3,17 +3,36 @@
 	$username = isset($_REQUEST["username"]) ? $_REQUEST["username"] : "";
 	$password = isset($_REQUEST["password"]) ? $_REQUEST["password"] : "";
 	$dbname = isset($_REQUEST["dbname"]) ? $_REQUEST["dbname"] : "";
-	// Read the file
-	$readmaster = fopen("tools/mysqli-master.php", "r");
-	$masterdata = fread($readmaster, filesize("tools/mysqli-master.php"));
-	fclose($readmaster);
-	// Write it to the mysqli.php
-	// Check if folder exists. If not, create it.
-	$dirname = dirname("../tools/mysqli.php");
-	if (!is_dir($dirname)) mkdir($dirname, 0755, true);
-	$writeblank = fopen("../tools/mysqli.php", "w");
-	fwrite($writeblank, $masterdata);
-	fclose($writeblank);
+	$connected = false;
+	$error_connecting = false;
+	if (isset($_REQUEST['checked'])) {
+		// Try hitting the mysql to check if this connects. If not, throw error.
+		// If it connect show the proceed button, after saving the data in a proper module.
+		// Create connection
+		@$conn = new mysqli($servername, $username, $password, $dbname);
+		// Check connection
+		if ($conn->connect_error) {
+			$error_connecting = true;
+		} else {
+		$connected = true;
+		// Read the file mysqli-master.php
+		$readmaster = fopen("tools/mysqli-master.php", "r");
+		$data = fread($readmaster, filesize("tools/mysqli-master.php"));
+		fclose($readmaster);
+		// Check if folder exists. If not, create it.
+		$dirname = dirname("../tools/mysqli.php");
+		if (!is_dir($dirname)) mkdir($dirname, 0755, true);
+		$writefile = fopen("../tools/mysqli.php", "w");
+		// Update the placeholders with actual values
+		$data = str_replace("_URL_", $servername, $data);
+		$data = str_replace("_USERNAME_", $username, $data);
+		$data = str_replace("_PASSWORD_", $password, $data);
+		$data = str_replace("_DBNAME_", $dbname, $data);
+		fwrite($writefile, $data);
+		fclose($writefile);
+	}
+	@$conn->close();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -78,36 +97,6 @@
 							<input type="text" class="form-control" id="dbname" name="dbname" placeholder="test" value="<?php echo $dbname; ?>">
 						</div>
 						<input type="hidden" name="checked" value="checked">
-						<?php
-							$connected = false;
-							$error_connecting = false;
-							if (isset($_REQUEST['checked'])) {
-								// Try hitting the mysql to check if this connects. If not, throw error.
-								// If it connect show the proceed button, after saving the data in a proper module.
-								// Create connection
-								@$conn = new mysqli($servername, $username, $password, $dbname);
-								// Check connection
-								if ($conn->connect_error) {
-									$error_connecting = true;
-								} else {
-									$connected = true;
-									// Set the value in tools/mysqli.php in proper format
-									$readfile = fopen("../tools/mysqli.php", "r");
-									// Read the file
-									$data = fread($readfile, filesize("../tools/mysqli.php"));
-									fclose($readfile);
-									$writefile = fopen("../tools/mysqli.php", "w");
-									// Update the placeholders with actual values
-									$data = str_replace("_URL_", $servername, $data);
-									$data = str_replace("_USERNAME_", $username, $data);
-									$data = str_replace("_PASSWORD_", $password, $data);
-									$data = str_replace("_DBNAME_", $dbname, $data);
-									fwrite($writefile, $data);
-									fclose($writefile);
-								}
-								@$conn->close();
-							}
-						?>
 						<div class="form-group">
 						<button type="submit" class="btn btn-default" <?php if ($connected) echo "disabled='disabled'"?>>Test Connection</button>
 						<?php if ($connected) echo "<span class='text-success'>Connection successful</span>"; ?>
