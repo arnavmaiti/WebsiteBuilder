@@ -3,6 +3,7 @@
 	$username = isset($_REQUEST["username"]) ? $_REQUEST["username"] : "";
 	$password = isset($_REQUEST["password"]) ? $_REQUEST["password"] : "";
 	$dbname = isset($_REQUEST["dbname"]) ? $_REQUEST["dbname"] : "";
+	$tableprefix = isset($_REQUEST["tableprefix"]) ? $_REQUEST["tableprefix"] : "wbuilder_";
 	$connected = false;
 	$error_connecting = false;
 	if (isset($_REQUEST['checked'])) {
@@ -14,25 +15,25 @@
 		if ($conn->connect_error) {
 			$error_connecting = true;
 		} else {
-		$connected = true;
-		// Read the file mysqli-master.php
-		$readmaster = fopen("tools/mysqli-master.php", "r");
-		$data = fread($readmaster, filesize("tools/mysqli-master.php"));
-		fclose($readmaster);
-		// Check if folder exists. If not, create it.
-		$dirname = dirname("../tools/mysqli.php");
-		if (!is_dir($dirname)) mkdir($dirname, 0755, true);
-		$writefile = fopen("../tools/mysqli.php", "w");
-		// Update the placeholders with actual values
-		$data = str_replace("_URL_", $servername, $data);
-		$data = str_replace("_USERNAME_", $username, $data);
-		$data = str_replace("_PASSWORD_", $password, $data);
-		$data = str_replace("_DBNAME_", $dbname, $data);
-		fwrite($writefile, $data);
-		fclose($writefile);
+			$connected = true;
+			// Read the file mysqli-master.php
+			$readmaster = fopen("tools/mysqli-master.php", "r");
+			$data = fread($readmaster, filesize("tools/mysqli-master.php"));
+			fclose($readmaster);
+			// Check if folder exists. If not, create it.
+			$dirname = dirname("../tools/mysqli.php");
+			if (!is_dir($dirname)) mkdir($dirname, 0755, true);
+			$writefile = fopen("../tools/mysqli.php", "w");
+			// Update the placeholders with actual values
+			$data = str_replace("_URL_", $servername, $data);
+			$data = str_replace("_USERNAME_", $username, $data);
+			$data = str_replace("_PASSWORD_", $password, $data);
+			$data = str_replace("_TABLEPREFIX_", $tableprefix, $data);
+			fwrite($writefile, $data);
+			fclose($writefile);
+		}
+		@$conn->close();
 	}
-	@$conn->close();
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -81,24 +82,29 @@
 					<form>
 						<div class="form-group">
 							<label for="url">Database URL</label>
-							<input type="text" class="form-control" id="url" name="url" placeholder="localhost" value="<?php echo $servername; ?>">
+							<input type="text" class="form-control" id="url" name="url" placeholder="localhost" value="<?php echo $servername; ?>" <?php if ($connected) echo "disabled='disabled'"?>>
 							<p class="help-block">In case you have no idea what this should be, put it as localhost</p>
 						</div>
 						<div class="form-group">
 							<label for="username">Database Username</label>
-							<input type="text" class="form-control" id="username" name="username" placeholder="admin" value="<?php echo $username; ?>">
+							<input type="text" class="form-control" id="username" name="username" placeholder="admin" value="<?php echo $username; ?>" <?php if ($connected) echo "disabled='disabled'"?>>
 						</div>
 						<div class="form-group">
 							<label for="password">Database Password</label>
-							<input type="password" class="form-control" id="password" name="password" placeholder="admin" value="<?php echo $password; ?>">
+							<input type="password" class="form-control" id="password" name="password" placeholder="admin" value="<?php echo $password; ?>" <?php if ($connected) echo "disabled='disabled'"?>>
 						</div>
 						<div class="form-group">
 							<label for="dbname">Database Name</label>
-							<input type="text" class="form-control" id="dbname" name="dbname" placeholder="test" value="<?php echo $dbname; ?>">
+							<input type="text" class="form-control" id="dbname" name="dbname" placeholder="test" value="<?php echo $dbname; ?>" <?php if ($connected) echo "disabled='disabled'"?>>
+						</div>
+						<div class="form-group">
+							<label for="url">Table Prefix</label>
+							<input type="text" class="form-control" id="tableprefix" name="tableprefix" placeholder="wbuilder_" value="<?php echo $tableprefix; ?>" <?php if ($connected) echo "disabled='disabled'"?>>
+							<p class="help-block">Use the format prefix_. If you are not sure, leave it as default value.</p>
 						</div>
 						<input type="hidden" name="checked" value="checked">
 						<div class="form-group">
-						<button type="submit" class="btn btn-default" <?php if ($connected) echo "disabled='disabled'"?>>Test Connection</button>
+						<button type="submit" class="btn btn-primary" <?php if ($connected) echo "disabled='disabled'"?>>Test Connection</button>
 						<?php if ($connected) echo "<span class='text-success'>Connection successful</span>"; ?>
 						<?php if ($error_connecting) echo "<span class='text-error'>Connection failed</span>"; ?>
 						</div>
