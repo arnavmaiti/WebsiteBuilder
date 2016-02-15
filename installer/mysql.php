@@ -16,9 +16,9 @@
 			$error_connecting = true;
 		} else {
 			$connected = true;
-			// Read the file mysqli-master.php
-			$readmaster = fopen("tools/mysqli-master.php", "r");
-			$data = fread($readmaster, filesize("tools/mysqli-master.php"));
+			// Read the file mysqli-template.php
+			$readmaster = fopen("tools/mysqli-template.php", "r");
+			$data = fread($readmaster, filesize("tools/mysqli-template.php"));
 			fclose($readmaster);
 			// Check if folder exists. If not, create it.
 			$dirname = dirname("../tools/mysqli.php");
