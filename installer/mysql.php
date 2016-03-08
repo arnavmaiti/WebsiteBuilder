@@ -28,6 +28,7 @@
 			$data = str_replace("_URL_", $servername, $data);
 			$data = str_replace("_USERNAME_", $username, $data);
 			$data = str_replace("_PASSWORD_", $password, $data);
+			$data = str_replace("_DBNAME_", $dbname, $data);
 			$data = str_replace("_TABLEPREFIX_", $tableprefix, $data);
 			fwrite($writefile, $data);
 			fclose($writefile);

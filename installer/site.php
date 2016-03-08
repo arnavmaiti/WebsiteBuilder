@@ -1,6 +1,10 @@
 <?php
 	// Initial connect to create a table called wbuilder_locale
-	require_once('../tools/mysqli.php');
+	include('../tools/mysqli.php');
+	include('tools/mysqli-parser.php');
+	// Call the 1_create_localization_sql.sql file
+	parse('sql/1_create_localization.sql', $url, $username, $password, $dbname, $tableprefix);
+	
 	$sitetitle = isset($_REQUEST["sitetitle"]) ? $_REQUEST["sitetitle"] : "";
 	$sitedesc = isset($_REQUEST["sitedesc"]) ? $_REQUEST["sitedesc"] : "";
 	$language = isset($_REQUEST["language"]) ? $_REQUEST["language"] : "";
@@ -11,18 +15,33 @@
 		// Try hitting the mysql to check if this connects. If not, throw error.
 		// If it connect show the proceed button, after saving the data in a proper module.
 		// Create connection
-		@$conn = new mysqli($servername, $username, $password, $dbname);
+		$conn = new mysqli($url, $username, $password, $dbname);
 		// Check connection
 		if ($conn->connect_error) {
 			$error_connecting = true;
 		} else {
-			
+			// Save the data in the site table
+			$sql = "INSERT INTO ".$tableprefix."site (site_key, site_value) VALUES ('sitetitle', '".$conn->real_escape_string($sitetitle)."');";
+			$sql .= "INSERT INTO ".$tableprefix."site (site_key, site_value) VALUES ('sitedesc', '".$conn->real_escape_string($sitedesc)."');";
+			$sql .= "INSERT INTO ".$tableprefix."site (site_key, site_value) VALUES ('language', '".$conn->real_escape_string($language)."');";
+			$sql .= "INSERT INTO ".$tableprefix."site (site_key, site_value) VALUES ('timezone', '".$conn->real_escape_string($timezone)."');";
+			$result = multi_query($sql);
 		}
-		@$conn->close();
+		$conn->close();
+		$saved = true;
+	}
+	// Locales
+	function locales() {
+		global $tableprefix;
+		$locales = array();
+		$result = query("SELECT locale, name FROM ".$tableprefix."locale");
+		while($row = $result->fetch_assoc()) {
+			$locales[$row['locale']] = $row['name'];
+		}
+		return $locales;
 	}
 	// Timezones
-	function generate_timezone_list()
-	{
+	function generate_timezone_list() {
 		static $regions = array(
 			DateTimeZone::AFRICA,
 			DateTimeZone::AMERICA,
@@ -56,7 +75,7 @@
 			$t = new DateTimeZone($timezone);
 			$c = new DateTime(null, $t);
 			$current_time = $c->format('g:i A');
-			$timezone_list["(${pretty_offset}) $timezone"] = "(${pretty_offset}) $timezone - $current_time";
+			$timezone_list["(${pretty_offset}) $timezone"] = "$timezone - $current_time (${pretty_offset})";
 		}
 		return $timezone_list;
 	}
@@ -88,7 +107,7 @@
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
 						<li><a href="index.php">Main Page</a></li>
-						<li class="active"><a>MySQL Setup  <span class="sr-only">(current)</span></a></li>
+						<li class="active"><a>Site Setup  <span class="sr-only">(current)</span></a></li>
 						<li><a href="help.php">Help</a></li>
 						<li><a href="about.php">About</a></li>
 					</ul>
@@ -112,21 +131,21 @@
 						</div>
 						<div class="form-group">
 							<label for="sitedesc">Site Description</label>
-							<textarea class="form-control" id="sitedesc" name="sitedesc" placeholder="This is an example text" value="<?php echo $sitedesc; ?>" rows="3" <?php if ($saved) echo "disabled='disabled'"?>></textarea>
+							<textarea class="form-control" id="sitedesc" name="sitedesc" placeholder="Put your site description here" value="<?php echo $sitedesc; ?>" rows="3" <?php if ($saved) echo "disabled='disabled'"?>></textarea>
 						</div>
 						<div class="form-group">
 							<label for="language">Site Language</label>
 							<select class="form-control" id="language" name="language" placeholder="admin" value="<?php echo $language; ?>" <?php if ($saved) echo "disabled='disabled'"?>>
-								<option name="en">English</option>
-								<option name="de">German</option>
-								<option name="fr">French</option>
+								<?php foreach(locales() as $key => $value) { ?>
+									<option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+								<?php } ?>
 							</select>
 						</div>
 						<div class="form-group">
 							<label for="timezone">Timezone</label>
 							<select class="form-control" id="language" name="timezone" placeholder="admin" value="<?php echo $timezone; ?>" <?php if ($saved) echo "disabled='disabled'"?>>
 								<?php foreach(generate_timezone_list() as $key => $value) { ?>
-									<option name="<?php echo $key; ?>"><?php echo $value; ?></option>
+									<option value="<?php echo $key; ?>"><?php echo $value; ?></option>
 								<?php } ?>
 							</select>
 						</div>
@@ -141,7 +160,7 @@
 							if ($saved) {
 						?>
 						<div class="form-group">
-							<a class="btn btn-primary btn-lg" href="site.php">Proceed to Site Settings</a>
+							<a class="btn btn-primary btn-lg" href="data.php">Proceed to Data Setup</a>
 						</div>
 						<?php
 							}
