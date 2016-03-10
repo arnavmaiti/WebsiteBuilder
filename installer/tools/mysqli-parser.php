@@ -9,8 +9,11 @@ function parse($location, $url, $username, $password, $dbname, $tableprefix) {
 	$readsql = fopen($location, "r");
 	if ($readsql) {
 		while (($line = fgets($readsql)) !== false) {
-			// process the line read.
-			executesql($line, $url, $username, $password, $dbname, $tableprefix);
+			// Adding a check if the line contains a # in front, meaning comment.
+			if ((substr($line, 0, 1) !== "#")) {
+				// process the line read.
+				executesql($line, $url, $username, $password, $dbname, $tableprefix);
+			}
 		}
 		fclose($readsql);
 	} else {
