@@ -14,7 +14,7 @@
 	// Add table setup
 	if (isset($_REQUEST['tablesetup'])) {
 		// Call the 2_create_tables.sql file
-		parse('sql/2_create_tables.sql', $url, $username, $password, $dbname, $tableprefix);
+		parse('sql/2_create_tables.sql', $dburl, $dbusername, $dbpassword, $dbname, $tableprefix);
 		$tablebtn = false;
 		$tablecomplete = true;
 		$databtn = true;
@@ -23,7 +23,7 @@
 	// Add initial data setup
 	if (isset($_REQUEST['initdatasetup'])) {
 		// Call the 3_set_initial_data.sql file
-		parse('sql/3_set_initial_data.sql', $url, $username, $password, $dbname, $tableprefix);
+		parse('sql/3_set_initial_data.sql', $dburl, $dbusername, $dbpassword, $dbname, $tableprefix);
 		$tablebtn = false;
 		$databtn = false;
 		$tablecomplete = true;
@@ -94,7 +94,7 @@
 					<?php } ?>
 					<?php if ($tablecomplete && $datacomplete) { ?>
 						<div class="form-group">
-							<a class="btn btn-primary btn-lg" href="final.php">Proceed to Finish up the Installation</a>
+							<a class="btn btn-primary btn-lg" href="admin.php">Proceed to Admin User Creation</a>
 						</div>
 					<?php } ?>
 				</div>

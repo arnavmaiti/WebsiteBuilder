@@ -1,7 +1,7 @@
 <?php 
-	$servername = isset($_REQUEST["url"]) ? $_REQUEST["url"] : "localhost";
-	$username = isset($_REQUEST["username"]) ? $_REQUEST["username"] : "";
-	$password = isset($_REQUEST["password"]) ? $_REQUEST["password"] : "";
+	$dburl = isset($_REQUEST["url"]) ? $_REQUEST["url"] : "localhost";
+	$dbusername = isset($_REQUEST["username"]) ? $_REQUEST["username"] : "";
+	$dbpassword = isset($_REQUEST["password"]) ? $_REQUEST["password"] : "";
 	$dbname = isset($_REQUEST["dbname"]) ? $_REQUEST["dbname"] : "";
 	$tableprefix = isset($_REQUEST["tableprefix"]) ? $_REQUEST["tableprefix"] : "wbuilder_";
 	$connected = false;
@@ -10,7 +10,7 @@
 		// Try hitting the mysql to check if this connects. If not, throw error.
 		// If it connect show the proceed button, after saving the data in a proper module.
 		// Create connection
-		@$conn = new mysqli($servername, $username, $password, $dbname);
+		@$conn = new mysqli($dburl, $dbusername, $dbpassword, $dbname);
 		// Check connection
 		if ($conn->connect_error) {
 			$error_connecting = true;
@@ -29,9 +29,9 @@
 			if (!is_dir($dirname)) mkdir($dirname, 0755, true);
 			$writefile = fopen("../tools/mysqli.php", "w");
 			// Update the placeholders with actual values
-			$data = str_replace("_URL_", $servername, $data);
-			$data = str_replace("_USERNAME_", $username, $data);
-			$data = str_replace("_PASSWORD_", $password, $data);
+			$data = str_replace("_URL_", $dburl, $data);
+			$data = str_replace("_USERNAME_", $dbusername, $data);
+			$data = str_replace("_PASSWORD_", $dbpassword, $data);
 			$data = str_replace("_DBNAME_", $dbname, $data);
 			$data = str_replace("_TABLEPREFIX_", $tableprefix, $data);
 			fwrite($writefile, $data);
@@ -87,16 +87,16 @@
 					<form>
 						<div class="form-group">
 							<label for="url">Database URL</label>
-							<input type="text" class="form-control" id="url" name="url" placeholder="localhost" value="<?php echo $servername; ?>" <?php if ($connected) echo "disabled='disabled'"?>>
+							<input type="text" class="form-control" id="url" name="url" placeholder="localhost" value="<?php echo $dburl; ?>" <?php if ($connected) echo "disabled='disabled'"?>>
 							<p class="help-block">In case you have no idea what this should be, put it as localhost</p>
 						</div>
 						<div class="form-group">
 							<label for="username">Database Username</label>
-							<input type="text" class="form-control" id="username" name="username" placeholder="admin" value="<?php echo $username; ?>" <?php if ($connected) echo "disabled='disabled'"?>>
+							<input type="text" class="form-control" id="username" name="username" placeholder="admin" value="<?php echo $dbusername; ?>" <?php if ($connected) echo "disabled='disabled'"?>>
 						</div>
 						<div class="form-group">
 							<label for="password">Database Password</label>
-							<input type="password" class="form-control" id="password" name="password" placeholder="admin" value="<?php echo $password; ?>" <?php if ($connected) echo "disabled='disabled'"?>>
+							<input type="password" class="form-control" id="password" name="password" placeholder="admin" value="<?php echo $dbpassword; ?>" <?php if ($connected) echo "disabled='disabled'"?>>
 						</div>
 						<div class="form-group">
 							<label for="dbname">Database Name</label>

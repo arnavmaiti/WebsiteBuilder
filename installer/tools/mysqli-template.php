@@ -1,15 +1,15 @@
 <?php
-	$url = "_URL_";
-	$username = "_USERNAME_";
-	$password = "_PASSWORD_";
+	$dburl = "_URL_";
+	$dbusername = "_USERNAME_";
+	$dbpassword = "_PASSWORD_";
 	$dbname = "_DBNAME_";
 	$tableprefix = "_TABLEPREFIX_";
 	function query($query) {
-		global $url;
-		global $username;
-		global $password;
+		global $dburl;
+		global $dbusername;
+		global $dbpassword;
 		global $dbname;
-		$conn = new mysqli($url, $username, $password, $dbname);
+		$conn = new mysqli($url, $dbusername, $dbpassword, $dbname);
 		// Check connection
 		if ($conn->connect_error) {
 			$error_connecting = true;
@@ -20,11 +20,11 @@
 		return $result;
 	}
 	function multi_query($query) {
-		global $url;
-		global $username;
-		global $password;
+		global $dburl;
+		global $dbusername;
+		global $dbpassword;
 		global $dbname;
-		$conn = new mysqli($url, $username, $password, $dbname);
+		$conn = new mysqli($url, $dbusername, $dbpassword, $dbname);
 		// Check connection
 		if ($conn->connect_error) {
 			$error_connecting = true;

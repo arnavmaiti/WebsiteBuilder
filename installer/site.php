@@ -3,7 +3,7 @@
 	include('../tools/mysqli.php');
 	include('tools/mysqli-parser.php');
 	// Call the 1_create_localization_sql.sql file
-	parse('sql/1_create_localization.sql', $url, $username, $password, $dbname, $tableprefix);
+	parse('sql/1_create_localization.sql', $dburl, $dbusername, $dbpassword, $dbname, $tableprefix);
 	
 	$sitetitle = isset($_REQUEST["sitetitle"]) ? $_REQUEST["sitetitle"] : "";
 	$sitedesc = isset($_REQUEST["sitedesc"]) ? $_REQUEST["sitedesc"] : "";
@@ -15,7 +15,7 @@
 		// Try hitting the mysql to check if this connects. If not, throw error.
 		// If it connect show the proceed button, after saving the data in a proper module.
 		// Create connection
-		$conn = new mysqli($url, $username, $password, $dbname);
+		$conn = new mysqli($dburl, $dbusername, $dbpassword, $dbname);
 		// Check connection
 		if ($conn->connect_error) {
 			$error_connecting = true;
