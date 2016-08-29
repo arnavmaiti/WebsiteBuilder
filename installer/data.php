@@ -2,8 +2,6 @@
 	// Initial connect to create a table called wbuilder_locale
 	include('../tools/mysqli.php');
 	include('tools/mysqli-parser.php');
-	// Call the 1_create_localization_sql.sql file
-	parse('sql/1_create_localization.sql', $url, $username, $password, $dbname, $tableprefix);
 	
 	// Checks to see that the button are enabled
 	$tablebtn = true;

@@ -15,7 +15,11 @@
 		if ($conn->connect_error) {
 			$error_connecting = true;
 		} else {
-			$connected = true;
+            if ($dbname == "") {
+                $error_connecting = true;
+            } else {
+                $connected = true;
+            }
 			// Read the file mysqli-template.php
 			$readmaster = fopen("tools/mysqli-template.php", "r");
 			$data = fread($readmaster, filesize("tools/mysqli-template.php"));
