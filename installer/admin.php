@@ -10,15 +10,29 @@
     $secanswer = isset($_REQUEST["secanswer"]) ? $_REQUEST["secanswer"] : "";
     $saved = false;
     $passnomatch = false;
+    $userexists = false;
     
     if (isset($_REQUEST['checked'])) {
-        // Check if the password is entered same twice
+        $result = query("SELECT id FROM ".$tableprefix."user WHERE username='".$username."'");
+        if ($result->num_rows > 0) {
+            $userexists = true;
+        } else {
+            // Check if the password is entered same twice
         $password = $_REQUEST["password"];
         $retypepass = $_REQUEST["retypepass"];
         if ($password != $retypepass) {
             $passnomatch = true;
         } else {
             // Add admin user
+            $result = query("INSERT INTO ".$tableprefix."user (username, password, lastlogin, role) VALUES ('".$username."', '".md5($password)."', '".round(microtime(true) * 1000)."', '1')");
+            $result = query("SELECT id FROM ".$tableprefix."user WHERE username='".$username."'");
+            while($row = $result->fetch_assoc()) {
+                $id = $row['id'];
+            }
+            // Add the user's other creds
+            $result = query("INSERT INTO ".$tableprefix."user_details (userid, firstname, lastname, secquestion, secanswer) VALUES ('".$id."', '".$firstname."', '".$lastname."', '".$secquestion."', '".$secanswer."')");
+            $saved = true;
+        }
         }
     }
     
@@ -114,6 +128,8 @@
                         <input type="hidden" name="checked" value="checked">
 						<div class="form-group">
 							<button class="btn btn-primary" type="submit" <?php if ($saved) echo "disabled='disabled'"?>>Create Admin User</button>
+                            <?php if ($userexists) echo "<span class='text-danger'>User already exists</span>"; ?>
+                            <?php if ($saved) echo "<span class='text-success'>Save successful</span>"; ?>
 						</div>
 					</form>
 					<?php if ($saved) { ?>

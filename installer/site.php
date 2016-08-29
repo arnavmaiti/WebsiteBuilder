@@ -25,7 +25,7 @@
 			$sql .= "INSERT INTO ".$tableprefix."site (site_key, site_value) VALUES ('sitedesc', '".$conn->real_escape_string($sitedesc)."');";
 			$sql .= "INSERT INTO ".$tableprefix."site (site_key, site_value) VALUES ('language', '".$conn->real_escape_string($language)."');";
 			$sql .= "INSERT INTO ".$tableprefix."site (site_key, site_value) VALUES ('timezone', '".$conn->real_escape_string($timezone)."');";
-			$result = multi_query($sql);
+			@$result = multi_query($sql);
 		}
 		$conn->close();
 		$saved = true;

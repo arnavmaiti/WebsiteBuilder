@@ -9,12 +9,12 @@
 		global $dbusername;
 		global $dbpassword;
 		global $dbname;
-		$conn = new mysqli($url, $dbusername, $dbpassword, $dbname);
+		$conn = new mysqli($dburl, $dbusername, $dbpassword, $dbname);
 		// Check connection
 		if ($conn->connect_error) {
 			$error_connecting = true;
 		} else {
-			$result = $conn->query($query);
+			@$result = $conn->query($query);
 		}
 		$conn->close();
 		return $result;
@@ -24,12 +24,12 @@
 		global $dbusername;
 		global $dbpassword;
 		global $dbname;
-		$conn = new mysqli($url, $dbusername, $dbpassword, $dbname);
+		$conn = new mysqli($dburl, $dbusername, $dbpassword, $dbname);
 		// Check connection
 		if ($conn->connect_error) {
 			$error_connecting = true;
 		} else {
-			$result = $conn->multi_query($query);
+			@$result = $conn->multi_query($query);
 		}
 		$conn->close();
 		return $result;
