@@ -9,9 +9,17 @@
     $secquestion = isset($_REQUEST["secquestion"]) ? $_REQUEST["secquestion"] : "";
     $secanswer = isset($_REQUEST["secanswer"]) ? $_REQUEST["secanswer"] : "";
     $saved = false;
+    $passnomatch = false;
     
     if (isset($_REQUEST['checked'])) {
-        
+        // Check if the password is entered same twice
+        $password = $_REQUEST["password"];
+        $retypepass = $_REQUEST["retypepass"];
+        if ($password != $retypepass) {
+            $passnomatch = true;
+        } else {
+            // Add admin user
+        }
     }
     
     // Security questions
@@ -101,6 +109,7 @@
                         <div class="form-group">
 							<label for="retypepass">Enter Password Again</label>
 							<input type="password" class="form-control" id="retypepass" name="retypepass" <?php if ($saved) echo "disabled='disabled'"?>>
+                            <?php if ($passnomatch) echo "<span class='text-danger'>Passwords did not match</span>"; ?>
 						</div>
                         <input type="hidden" name="checked" value="checked">
 						<div class="form-group">

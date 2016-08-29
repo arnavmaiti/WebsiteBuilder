@@ -153,7 +153,7 @@
 						<div class="form-group">
 						<button type="submit" class="btn btn-primary" <?php if ($saved) echo "disabled='disabled'"?>>Save</button>
 						<?php if ($saved) echo "<span class='text-success'>Save successful</span>"; ?>
-						<?php if ($error_connecting) echo "<span class='text-error'>Save failed</span>"; ?>
+						<?php if ($error_connecting) echo "<span class='text-danger'>Save failed</span>"; ?>
 						</div>
 						
 						<?php 
