@@ -1,6 +1,6 @@
 # User tables
 drop table __prefix__user;
-create table __prefix__user(id int(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, username varchar(255) NOT NULL, password varchar(255) NOT NULL, lastlogin varchar(255), role int(5) NOT NULL);
+create table __prefix__user(id int(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, username varchar(255) NOT NULL, password varchar(255) NOT NULL, lastlogin varchar(255), authtoken varchar(255), tokenexpire varchar(255), role int(5) NOT NULL);
 drop table __prefix__user_details;
 create table __prefix__user_details(id int(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY, userid int(11) NOT NULL, firstname varchar(255), lastname varchar(255), middlename varchar(255), dateofbirth varchar(255), secquestion int(11) NOT NULL, secanswer varchar(255) NOT NULL);
 drop table __prefix__user_roles;
